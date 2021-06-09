@@ -10,4 +10,8 @@ In this paper, we propose and investigate an aerial reconfigurable intelligent s
 
 ## Source code
 ### Outage performance analysis
-- [View demo](https://github.com/trinhudo/AerialRIS/blob/main/demo_OP_ana_sim.pdf)
+- [Demo by MATLAB](https://github.com/trinhudo/AerialRIS/blob/main/demo_OP_ana_sim.pdf)
+
+### Outage probability prediction using deep neural network (DNN)
+- [Demo by Google Colab](https://github.com/trinhudo/AerialRIS/blob/main/Aerial_RIS_DNN_OP_prediction_Colaboratory.pdf)
+- [ipynb](https://github.com/trinhudo/AerialRIS/blob/main/DNN_prediction/Aerial_RIS_DNN_OP_prediction.ipynb)

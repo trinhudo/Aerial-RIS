@@ -1,5 +1,7 @@
 # Aerial Reconfigurable Intelligent Surface-Aided Wireless Communication Systems
+
 **Tri Nhu Do, Georges Kaddoum, Thanh Luan Nguyen, Daniel Benevides da Costa, and Zygmunt J. Haas**
+
 **_IEEE International Symposium on Personal, Indoor and Mobile Radio Communications (PIMRC), 2021_**
 
 ## Abstract

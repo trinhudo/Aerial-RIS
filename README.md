@@ -11,7 +11,7 @@ In this paper, we propose and investigate an aerial reconfigurable intelligent s
 
 ## Source code
 ### Outage performance analysis
-- [Demo by MATLAB](https://github.com/trinhudo/AerialRIS/blob/main/demo_OP_ana_sim.pdf)
+- [Demo by MATLAB](https://github.com/trinhudo/Aerial-RIS/blob/main/Outage_Analysis/Demo_OP.pdf)
 - [Source code](https://github.com/trinhudo/Aerial-RIS/tree/main/Outage_Analysis)
 
 ### Outage probability prediction using deep neural network (DNN)

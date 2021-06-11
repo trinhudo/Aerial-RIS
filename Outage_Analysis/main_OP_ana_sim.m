@@ -11,8 +11,8 @@ snr_dB = 0:2:20; % average transmit SNR in dB
 R_th = 1; % SE threshold b/s/Hz
 snr_th = 2^R_th - 1;
 
-d_Sr = 1 + rand; % random distance S->RIS
-d_rD = 1 + rand; % random distance RIS->D
+d_Sr = 1+rand; % random distance S->RIS
+d_rD = 1+rand; % random distance RIS->D
 PLE = 2.7; % path-loss exponent
 
 % Nakagami-m parameters
@@ -22,12 +22,13 @@ Omega_Sr = d_Sr^(-PLE); % random spread, S->RIS
 Omega_rD = d_rD^(-PLE); % random spread, RIS->D
 
 % Inverse Gammar (IG)'s parameters
-alpha_Sr = 3.0 + rand; % random shape, S->RIS
-alpha_rD = 3.0 + rand; % random shape, RIS->D
-beta_Sr = 1 + rand; % random spread, S->RIS
-beta_rD = 1 + rand; % random spread, RIS->D
+alpha_Sr = 3.0+rand; % random shape, S->RIS
+alpha_rD = 3.0+rand; % random shape, RIS->D
+beta_Sr = 1; % random spread, S->RIS
+beta_rD = 1; % random spread, RIS->D
 
 Z_sim = 0;
+kappa = 1; % for RIS
 
 %% Channel modeling
 
@@ -38,6 +39,7 @@ G_rD = random('Naka', m_rD, Omega_rD, [N, sim_times]);
 % Inverse Gamma shadowing
 L_Sr = 1./random('Gamma', alpha_Sr, 1/beta_Sr, [N, sim_times]);
 L_rD = 1./random('Gamma', alpha_rD, 1/beta_rD, [N, sim_times]);
+% Here, beta is the "rate"
 
 Gr = G_Sr.*G_rD; % e2e fading w.r.t. one element
 Lr = L_Sr.*L_rD; % e2e shadowing w.r.t. one element
@@ -46,7 +48,40 @@ W_sim = Gr.*Lr; % e2e channel w.r.t. one element
 Z_sim = sum(W_sim,1); % e2e chanel w.r.t. the whole RIS
 % end
 
-Z2_sim = Z_sim.^2; % squared e2e magnitude
+Z2_sim = Z_sim.^2; % e2e squared magnitude
+
+
+%% new
+
+% phase of channels
+phase_Sr = 2*pi*rand(N, sim_times); % domain [0,2pi)
+phase_rD = 2*pi*rand(N, sim_times); % domain [0,2pi)
+
+% Channel modeling
+G_Sr_complex_fading = G_Sr .* exp(1i*phase_Sr);
+G_rD_complex_fading = G_rD .* exp(1i*phase_rD);
+
+% Phase-shift configuration
+Z_sim_optimal_phase_shift = zeros(1,sim_times);
+for ss = 1:sim_times % loop over simulation trials
+    for ll = 1:N % loop over each elements of the RIS
+        % unknown domain phase-shift
+        phase_shift_element_temp(ll,ss) = - phase_Sr(ll,ss) - phase_rD(ll,ss);
+        
+        % convert to domain of [0, 2pi)
+        phase_shift_element(ll,ss) = wrapTo2Pi(phase_shift_element_temp(ll,ss));
+        
+        Gr_optimal_phase_shift(ll,ss) = abs(G_Sr_complex_fading(ll,ss) * ...
+            exp(1i*phase_shift_element(ll,ss)) * G_rD_complex_fading(ll,ss));
+        W_optimal_phase_shift(ll,ss) = Gr_optimal_phase_shift(ll,ss)*Lr(ll,ss);
+    end
+end
+%
+% Z_sim = sum(abs(W_e2e),1); % Magnitude of the e2e channel
+Z_sim_optimal_phase_shift = sum(W_optimal_phase_shift,1);
+% Magnitude of the e2e channel
+
+Z2_sim_optimal_phase_shift = Z_sim_optimal_phase_shift.^2;
 
 %% Analysis
 
@@ -67,7 +102,7 @@ Omega_L = gamma(alpha_Sr+1/2)*gamma(alpha_rD+1/2) / ...
 m_L = Omega_L^2 / (alpha_Sr*alpha_rD/beta_Sr/beta_rD - Omega_L^2);
 
 % Check the analytical parameters by fitting
-distParam = fitdist(1./sqrt(Lr(:)), 'gamma'); % Lr(:) is a column vector
+distParam = fitdist(1./sqrt(Lr(:)), 'gamma');
 m_L_fit = distParam.a;
 Omega_L_fit = distParam.b*distParam.a;
 
@@ -83,17 +118,17 @@ for kk = 1:K
     alpha_W = @(x) 0; %-> xi_k
     %
     for ii = 1:K
-        alpha_W= @(x) alpha_W(x)...
+        alpha_W = @(x) alpha_W(x)...
             + theta_W(ii)*zeta_W(ii)^(-m_G);
     end
     %
-    alpha_W= @(x) theta_W(x)/alpha_W(x);
+    alpha_W = @(x) theta_W(x)/alpha_W(x);
     %
     f_W_n = @(r) f_W_n(r)...
         + alpha_W(kk)/gamma(m_G).*r.^(m_G-1).*exp(-zeta_W(kk)*r);
 end
 
-% STEP-4: LAPLACE TRANSFORM TEST
+% STEP-4: LAPLACE TEST
 L_W_fit = @(s) ( integral(@(r) exp(-s*r).*f_W_n(r), 0, Inf) )^N;
 L_W_exact= @(s) mean( exp(-s*Z_sim) );
 
@@ -136,19 +171,21 @@ F_Z_fit = @(x) F_Z_fit(x).*x.^(m_G*N)/gamma(1+m_G*N);
 F_Z2_fit= @(y) F_Z_fit(sqrt(y)); % F_Y (y) = F_X (sqrt(y))
 
 %% Outage probability
-
 for ii = 1:length(snr_dB)
     snr = 10^(snr_dB(ii)/10);
     %
     OP_sim(ii) = mean( Z2_sim < snr_th/snr );
+    OP_sim_new(ii) = mean( Z2_sim_optimal_phase_shift < snr_th/snr );
     OP_ana(ii) = F_Z2_fit( snr_th/snr );
 end
 
 %% Plotting results
 
 figure(2);
-semilogy(snr_dB, OP_sim, '-'); hold on;
-semilogy(snr_dB, OP_ana, ':o'); hold on;
+semilogy(snr_dB, OP_sim, 'b+:'); hold on;
+semilogy(snr_dB, OP_sim_new, 'r-'); hold on;
+
+semilogy(snr_dB, OP_ana, 'g:o'); hold on;
 xlabel('Transmit SNR [dB]');
 ylabel('Outage Probability');
 ldg = legend('Simulation', 'Analysis (Approx.)', 'location', 'southwest');

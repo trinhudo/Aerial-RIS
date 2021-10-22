@@ -25,17 +25,12 @@ In this paper, we propose and investigate an aerial reconfigurable intelligent s
 If you find that our paper is interesting and our code is helpful, please cite our paper. Thank you!
 
 ```
-@article{Do_arXiv_2021_b,
-author = {Do, Tri Nhu and Kaddoum, Georges and Nguyen, Thanh Luan and da Costa, Daniel Benevides and Haas, Zygmunt J.},
-title = {Aerial Reconfigurable Intelligent Surface-Aided Wireless Communication Systems},
-year = {2021},
-month = {Jun.},
-url = {https://arxiv.org/abs/2106.05380}
-}
-```
-
-or
-
-```
-T. N. Do, G. Kaddoum, T. L. Nguyen, D. B. da Costa, and Z. J. Haas, “Aerial reconfigurable intelligent surface-aided wireless communication systems,” Jun. 2021. [Online]. Available: https://arxiv.org/abs/2106.05380
+@INPROCEEDINGS{DoPIMRC2021,
+  author={Do, Tri Nhu and Kaddoum, Georges and Nguyen, Thanh Luan and da Costa, Daniel Benevides and Haas, Zygmunt J.},
+  booktitle={2021 IEEE 32nd Annual International Symposium on Personal, Indoor and Mobile Radio Communications (PIMRC)}, 
+  title={Aerial Reconfigurable Intelligent Surface-Aided Wireless Communication Systems}, 
+  year={2021},
+  pages={525-530},
+  address={Helsinki, Finland},
+  doi={10.1109/PIMRC50174.2021.9569450}}
 ```

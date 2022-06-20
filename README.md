@@ -20,17 +20,3 @@ In this paper, we propose and investigate an aerial reconfigurable intelligent s
 - [ipynb](https://github.com/trinhudo/AerialRIS/blob/main/DNN_prediction/Aerial_RIS_DNN_OP_prediction.ipynb)
 - [Source code](https://github.com/trinhudo/Aerial-RIS/tree/main/DNN_prediction)
 
-## Bibtex formatted citation
-
-If you find that our paper is interesting and our code is helpful, please cite our paper. Thank you!
-
-```
-@INPROCEEDINGS{DoPIMRC2021,
-  author={Do, Tri Nhu and Kaddoum, Georges and Nguyen, Thanh Luan and da Costa, Daniel Benevides and Haas, Zygmunt J.},
-  booktitle={2021 IEEE 32nd Annual International Symposium on Personal, Indoor and Mobile Radio Communications (PIMRC)}, 
-  title={Aerial Reconfigurable Intelligent Surface-Aided Wireless Communication Systems}, 
-  year={2021},
-  pages={525-530},
-  address={Helsinki, Finland},
-  doi={10.1109/PIMRC50174.2021.9569450}}
-```
